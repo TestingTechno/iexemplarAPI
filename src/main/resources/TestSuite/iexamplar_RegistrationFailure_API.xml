@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="testNGLearning">
+    <test name="Registration_Failure_API">  
+        <classes>
+            <class name="com.iexemplar.Iexemplar_API.Test_eCardShare_registration_API" />
+         </classes>
+    </test>
+</suite>
