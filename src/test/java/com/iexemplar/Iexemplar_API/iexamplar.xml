@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<suite name="testNGLearning">
-    <test name="simpleTest">
-        <classes>
-            <class name="com.iexemplar.Iexemplar_API.App" />
-           
-        </classes>
-    </test>
-</suite>
