@@ -67,7 +67,7 @@ public class Test_eCardShare_pinVerificationAPI extends AlgrothimImpl {
 			 System.out.println("Response DataMap Detail :"+resp_msg_detail.toString());
 			 
 				 
-			 assertTrue(  (API_response_code == EXP_FAIL_STATUS) && 
+			 assertTrue((API_response_code.equalsIgnoreCase(EXP_FAIL_STATUS)) && 
 			  	(resp_response_msg.contains("Failure")) && 
 			  (resp_msg_detail.contains("Invalid Pin Verification")));
 		
