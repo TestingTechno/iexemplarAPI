@@ -85,7 +85,7 @@ public class eCardShare {
         
         requestMap.put("mobileNumber", mobileNumber);
         requestMap.put("deviceToken", deviceToken);
-        requestMap.put("pin",pin);
+        requestMap.put("pin","90875");
         ObjectWriter jacksonWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String json = jacksonWriter.writeValueAsString(requestMap);
         
@@ -100,9 +100,10 @@ public class eCardShare {
         }		
 		return response;
 	}
-	public static ClientResponse Resend_Email_API(Client client,String UserID) throws JsonGenerationException, JsonMappingException, IOException {
+	public static ClientResponse Resend_Email_API(Client client,String UserID,String oauthkey) throws JsonGenerationException, JsonMappingException, IOException {
 			
 				userID=UserID;
+				oAuthToken=oauthkey;
 				WebResource service = client.resource(PropertyUtil.getProperty("resend_verification_email"));
 			     
 		        Map<String,Object> requestMap = new HashMap<String,Object>();
@@ -200,7 +201,7 @@ public class eCardShare {
 	
 	public static ClientResponse Get_My_Notification_List_API(Client client) throws JsonGenerationException, JsonMappingException, IOException {
 				
-				String url = "notifications?deviceToken="+deviceToken+"&offset=1&limit=12";
+				String url = "http://www.iexemplar.com/website/ecs/v3/notifications?deviceToken="+deviceToken+"&offset=1&limit=12";
 				WebResource service = client.resource(url);
 			    ClientResponse response = null; 
 		        try{
@@ -229,11 +230,11 @@ public class eCardShare {
 	public static ClientResponse View_Card_Detail_API(Client client,
 			String deviceToken, String oauthKey) throws JsonGenerationException, JsonMappingException, IOException {
 				
-				String url= "cards?cardId=14&deviceToken="+deviceToken;
+				String url= "http://www.iexemplar.com/website/ecs/v3/cards?cardId=14&deviceToken="+deviceToken;
 				WebResource service = client.resource(url);
 			    ClientResponse response = null; 
 		        try{
-		        response = service.type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+		        response = service.header("apikey", "testapikey").header("apisecretkey", "testapisecretkey").header("oauthkey", oAuthToken).header("Access-Control-Allow-Origin", "*").type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
 					}
 		        catch(Exception ex) {
 		        	ex.printStackTrace();
