@@ -1,4 +1,4 @@
-package com.iexemplar.Iexemplar_API;
+/*package com.iexemplar.Iexemplar_API;
 
 import static org.testng.Assert.assertTrue;
 import iExemplar_API.eCardShare;
@@ -74,3 +74,4 @@ public class Test_eCardShare_pinVerificationAPI extends AlgrothimImpl {
 	 }
 
 }
+*/

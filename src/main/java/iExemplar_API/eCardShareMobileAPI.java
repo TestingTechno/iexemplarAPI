@@ -1,23 +1,25 @@
 package iExemplar_API;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
+import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ws.rs.core.MediaType;
 
-
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
+
 
 import Utility.AlgrothimImpl;
 import Utility.PropertyUtil;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
-//import com.owler.api.util.SignatureUtil;
+import com.iexemplar.Iexemplar_API.mix;
+
+/*import com.iexemplar.Iexemplar_API..mix;*/
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -27,21 +29,24 @@ import com.sun.jersey.api.client.WebResource;
  *
  */
 
-public class eCardShare {
+public class eCardShareMobileAPI {
 	
 	static String mobileNumber = null;
 	static String deviceToken = null;
 	public static String oAuthToken = null;
 	public static String userID=null;
 	public static String udid=null;
-	static String EncryptedMsg = "AwHiNSU2EdxbkoI6jp+g9g7ISrVbFKp8zLYPJbX+P5aelOpjSptmy5REGTa1u9CjXaWQ2fGaBcnIUFr93VXnrrjJU5H57BdMQJPUtVe+KUs2fyac20CMB5Hf1ZxO3uCHJmOSJ6QZKy8TrP0qduU30kREvLM1vE7IjkbMqr/inQfRv8vNjSWriQZQG1XJI6e5redBSQYmq5brdwX69C/EBi2aL5vYBu7CPzSpOtoRi/1O0tNEx9k9f8VljHQvY9bcGri+fbptwzfAFTn0GBuIZ0ExDxh5rn+fkCID1/fRJOa16DSVFB7tCAFkaUcsWxQ6uIAEMDRkh/K2kmYPIfJfZ10El0GQVO/9rannpxM1qnr8ttlx1n01wiYFgpK19gRzkEpI7Ca2Igh5jVwB0H8IHY49Kfi1O+jRe61xaRoJsB13lgFf18B1abzUXPiQxFilMPT2TXrOyr6gbIBAhiaV5fqtEFBmOxb4Df4Q3zbrcVKA55+X4AOxQAuDScQoC5FxA789eUpOgv7qPvozcb4ORH56pr40wmV68Wgjy+FPdKZReYq+dsc8JF4sHIlyWG/yLKBkjtQwDRSubM2X3yVg5Oi+GylsB2H0BnEQrvpYaSK/CjgYWpw7kB8qUavJZplvZ0833775+CIujbxaJPnvyprhFYRhj1QpJCF3TCUfoC8qaWPo+X8q+O6RXU6Fpn1KhWMQFJtrcCOMIzzI+9lnOxALJxUqYyE/ltTGaoCoTo2lipVyBV6QN9LWOdw35jF/56OIJhAOEDNNvwmOeznLpf7Ds0+um4671zjIB4mLGroTTsFI7rOEhypVkSiDNZFf+X/3PpJ/e1AxIfl2y/icfB2v1LGnDVD80c4/8Yta27dWdb9RXhSyCUXEdXLXNd+6usYHXX4Gy/wZTNx1m+rp7Pn5U23HN/wqPx0rXM9gVh4wpq/ow9ZkcsqsBk5S3IZWw/Gm93mc3SQYbcToYGuu2ydC";
+	static String deviceType="android";
+	static String oldUname="";
+	static String claimPhoneNumber="no";
+	static String deviceUniqueId;
 	
-	public static ClientResponse registrationAPI(Client client,String username, String password, String fName,
-			String Lname, String mobNumber, String deviceType, String devToken, String oldUname, String forceRegistration,
-			String claimPhoneNumber) throws Exception{
+	public static ClientResponse registrationAPI(Client client,String username,String password,String fName,String Lname,String mobNumber) throws Exception{
 	    	
+			
 			mobileNumber=mobNumber;
-			deviceToken=devToken;
+			deviceToken=mobNumber;
+			deviceUniqueId=mobNumber;
 		 	String Md5password = AlgrothimImpl.Md5SingleValueEncryption(password);
 		 	String Md5RegisterToken = AlgrothimImpl.Md5MultiValueEncryption(username, Md5password);
 		 	
@@ -57,7 +62,7 @@ public class eCardShare {
 	        requestMap.put("deviceType", deviceType);
 	        requestMap.put("deviceToken", deviceToken);
 	        requestMap.put("oldUserName", oldUname);
-	       // requestMap.put("forceRegistration", forceRegistration);
+	        requestMap.put("deviceUniqueId", deviceUniqueId);
 	        requestMap.put("claimPhoneNumber", claimPhoneNumber);
 	        
 	        ObjectWriter jacksonWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
@@ -68,7 +73,7 @@ public class eCardShare {
 	        ClientResponse response = null; 
 	        try{
 	        response = service.header("apikey", "testapikey").header("apisecretkey", "testapisecretkey").header("registrationtoken", Md5RegisterToken).header("Access-Control-Allow-Origin", "*").type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(ClientResponse.class, json);
-	       // System.out.println("RESPONSE Object :"+response.getEntity(String.class));
+	       
 	        }
 	        catch(Exception ex){
 	        	ex.printStackTrace();
@@ -76,7 +81,15 @@ public class eCardShare {
 			return response;
 	        }
 
-	public static ClientResponse PinVerificationAPI(Client client,String pin,String oauthKey) throws JsonGenerationException, JsonMappingException, IOException {
+	public static ClientResponse PinVerificationAPI(Client client,String oauthKey) throws JsonGenerationException, JsonMappingException, IOException {
+		
+		
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String Verificationpin;   
+        System.out.println("Please Enter the Pin :: ");
+        Verificationpin= br.readLine();  
+        
 		
 		oAuthToken=oauthKey;
 		WebResource service = client.resource(PropertyUtil.getProperty("verify_pin"));
@@ -85,7 +98,7 @@ public class eCardShare {
         
         requestMap.put("mobileNumber", mobileNumber);
         requestMap.put("deviceToken", deviceToken);
-        requestMap.put("pin","90875");
+        requestMap.put("pin",Verificationpin);
         ObjectWriter jacksonWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String json = jacksonWriter.writeValueAsString(requestMap);
         
@@ -126,12 +139,40 @@ public class eCardShare {
 		        return response;
 	}
 	
-	public static ClientResponse Resend_Mobile_Verification_API(Client client) throws JsonGenerationException, JsonMappingException, IOException {
+	public static ClientResponse Resend_UDID_API(Client client) throws JsonGenerationException, JsonMappingException, IOException {
+		
+		
+		
+		WebResource service = client.resource(PropertyUtil.getProperty("Resend_udid"));
+	     
+        Map<String,Object> requestMap = new HashMap<String,Object>();
+        
+        requestMap.put("userId",userID);
+        requestMap.put("deviceToken", deviceToken);
+        requestMap.put("mobileNumber", mobileNumber);
+        ObjectWriter jacksonWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = jacksonWriter.writeValueAsString(requestMap);
+        
+        System.out.println("JSON Object with CompanyName :\n"+ json); 
+            
+        ClientResponse response = null; 
+        try{
+        response = service.header("apikey", "testapikey").header("apisecretkey", "testapisecretkey").header("oauthkey", oAuthToken).header("Access-Control-Allow-Origin", "*").type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(ClientResponse.class, json);
+			}
+        catch(Exception ex) {
+        	ex.printStackTrace();
+        }		
+        return response;
+}
+
+	
+	
+	public static ClientResponse Resend_Mobile_Verification_API(Client client,String userid) throws JsonGenerationException, JsonMappingException, IOException {
 		
 				WebResource service = client.resource(PropertyUtil.getProperty("Resend_Mobile_Verification"));
 			     
 		        Map<String,Object> requestMap = new HashMap<String,Object>();
-		        
+		        userID=userid;
 		        requestMap.put("mobileNumber", mobileNumber);
 		        requestMap.put("userId", userID);
 		        requestMap.put("deviceToken", deviceToken);
@@ -153,7 +194,7 @@ public class eCardShare {
 	public static ClientResponse Symmetric_Key_Request_API(Client client,String uDid) throws JsonGenerationException, JsonMappingException, IOException {
 			
 				udid = uDid;
-				WebResource service = client.resource(PropertyUtil.getProperty("key"));
+				WebResource service = client.resource(PropertyUtil.getProperty("server_key"));
 			     
 		        Map<String,Object> requestMap = new HashMap<String,Object>();
 		        
@@ -176,13 +217,13 @@ public class eCardShare {
 		        return response;
 	}
 	
-	public static ClientResponse Sharing_Cads_API(Client client) throws JsonGenerationException, JsonMappingException, IOException {
+	public static ClientResponse Sharing_Cads_API(Client client,String msg) throws JsonGenerationException, JsonMappingException, IOException {
 		
 				WebResource service = client.resource(PropertyUtil.getProperty("cards"));
 				
 				Map<String,Object> requestMap = new HashMap<String,Object>();
 		        requestMap.put("userId", userID);
-		        requestMap.put("message", EncryptedMsg);
+		        requestMap.put("message", msg);
 		        requestMap.put("deviceToken",deviceToken);
 		       
 		        ObjectWriter jacksonWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
@@ -214,9 +255,18 @@ public class eCardShare {
 	}
 	
 	public static ClientResponse Email_Verification_Api(Client client,
-			String uri) throws JsonGenerationException, JsonMappingException, IOException {
+			String uri/*,String token*/) throws JsonGenerationException, JsonMappingException, IOException {
 		
-				WebResource service = client.resource("http://www.iexemplar.com/website/ecs/v3/"+uri+oAuthToken);
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String newOauthTOken;   
+        System.out.println("Please Enter the Pin :: ");
+        newOauthTOken= br.readLine();  
+        
+		
+		oAuthToken=newOauthTOken;
+		
+				WebResource service = client.resource("http://208.43.91.140/rest/beta/esharecard/v0.2/"+uri+oAuthToken);
 			    ClientResponse response = null; 
 		        try{
 		        response = service.type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
@@ -227,8 +277,10 @@ public class eCardShare {
 		        return response;
 	}
 	
+
+
 	public static ClientResponse View_Card_Detail_API(Client client,
-			String deviceToken, String oauthKey) throws JsonGenerationException, JsonMappingException, IOException {
+			String oauthKey) throws JsonGenerationException, JsonMappingException, IOException {
 				
 				String url= "http://www.iexemplar.com/website/ecs/v3/cards?cardId=14&deviceToken="+deviceToken;
 				WebResource service = client.resource(url);
@@ -241,6 +293,92 @@ public class eCardShare {
 		        }		
 		        return response;
 	}
+	
+	public static ClientResponse gettingMixPanelEvent(Client client) throws Exception, IOException {
+		
+		 Date date = new Date();
+	      long timeMilli = date.getTime();
+	      timeMilli=timeMilli+600000;
+	      System.out.println("Time in milliseconds using Date class: " + timeMilli);
+	      
+		String API_KEY = "api_key=02abb5c69b84e501d52a7a361918100f";
+		String API_SECRET = "9fc0827b25b20c364334c570a3d5a13f";
+		String FROM_DATE = "from_date=2015-06-02";
+		String TO_DATE = "to_date=2015-06-03";
+		String Event = "event=[\"User Registration\"]";
+		String where = "where=\"sds@sdf.com\""+" == "+"properties[\"Email\"]";
+		String expire="expire="+timeMilli;
+		
+		
+		
+    	System.out.println("===================================================================");
+    	WebResource service = client.resource("http://data.mixpanel.com/api/2.0/export/?");
+    	
+    	System.out.println("Service is "+service);
+    	Map<String,Object> requestMap = new HashMap<String,Object>();
+        String[] args = {API_KEY,FROM_DATE,TO_DATE,Event,where,expire};
+        String[] sigwithqueryParam= mix.signature(args,API_SECRET);
+    
+       /* 
+	 	//JSONObject requestMap = new JSONObject();
+        requestMap.put("api_key","02abb5c69b84e501d52a7a361918100f");
+        requestMap.put("sig",sigwithqueryParam[0]);
+        requestMap.put("event", "[\"User Registration\"]");
+        requestMap.put("expire", "1433222734");
+        requestMap.put("from_date","2015-05-18" );
+        requestMap.put("to_date", "2015-05-19");
+        requestMap.put("where", "\"1060212\""+" == "+"properties[\"UserId\"]");
+        
+        
+        ObjectWriter jacksonWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = jacksonWriter.writeValueAsString(requestMap);
+*/
+        String query = mix.encodeUrl(sigwithqueryParam[1]);
+        
+        System.out.println("JSON Object with CompanyName :\n"+ service+query); 
+            
+        ClientResponse response = null; 
+        try{
+        	response = service.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,query);
+        	System.out.println("RESPONSE"+response);
+			}
+        catch(Exception ex) {
+        	ex.printStackTrace();
+        }
+     
+		return response;
+    }
+    
+	/*public void getEncodeurl(){
+		
+	
+
+		String API_KEY = "1234";
+		String API_SECRET = "5678";
+
+		query_params = {
+		    'api_key': API_KEY,
+		    'from_date': '2014-04-01',
+		    'to_date': '2014-04-30',
+		    'event': 'High Fantasy',
+		    'expire': str(int(time.time()) + 600),
+		    'format': 'json',
+		    }
+
+		s = ''.join('='.join(i) for i in sorted(query_params.items()))
+		s += API_SECRET
+		query_params['sig'] = hashlib.md5(s).hexdigest()
+
+		ENDPOINT = 'https://mixpanel.com/api/2.0/segmentation/'
+
+		response = requests.get(ENDPOINT, params=query_params)
+
+		data = response.json()
+
+		print data
+		
+	}
+	*/
 	
 }
     
