@@ -33,6 +33,7 @@
       			<version>2.4.1</version>
       		<scope>test</scope>
 		</dependency>
+	
 		<dependency>
   			<groupId>org.seleniumhq.selenium</groupId>
   			<artifactId>selenium-java</artifactId>
@@ -43,6 +44,7 @@
 			<artifactId>selenium-server</artifactId>
 			<version>2.37.0</version>
 		</dependency>
+		
 		<dependency>
       		<groupId>com.jayway.restassured</groupId>
       		<artifactId>json-path</artifactId>
@@ -53,6 +55,7 @@
   			<artifactId>jxl</artifactId>
   			<version>2.6.12</version>
   		</dependency>
+  		
 		<dependency>
       		<groupId>com.jayway.restassured</groupId>
       		<artifactId>xml-path</artifactId>
@@ -96,6 +99,12 @@
 			<artifactId>gson</artifactId>
 			<version>2.2.2</version>
 		</dependency>
+		
+		<dependency>
+    <groupId>org.cryptonode.jncryptor</groupId>
+    <artifactId>jncryptor</artifactId>
+    <version>1.2.0</version>
+</dependency>
 
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
@@ -121,30 +130,7 @@
     
   </dependencies>
   
-  	<profiles>
-		<profile>
-			<id>Iexemplar API</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<integration_test>run</integration_test>
-						<version>2.14.1</version>
-						<configuration>
-							<suiteXmlFiles>
-								<suiteXmlFile>C:/Users/DELL/git/iexemplar/Iexemplar_API/src/test/java/com/iexemplar/Iexemplar_API/iexamplar.xml
-								    </suiteXmlFile>
-				 			</suiteXmlFiles>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+  	
   
   
 </project>
